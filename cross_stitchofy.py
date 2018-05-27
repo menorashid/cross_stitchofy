@@ -1,5 +1,6 @@
 
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt;
 import numpy as np
 import scipy.misc
@@ -7,10 +8,11 @@ import sklearn.cluster
 import matplotlib.colors
 import sys
 import argparse
+# import imageio
 # import matplotlib.pyplot as plt
 
 def cluster_im(im,type_cluster, num_k):
-
+    print im.shape
     arr = np.array(im,dtype=float)/255.
     # print np.min(arr),np.max(arr)
     if type_cluster[0]=='hsv':
@@ -23,12 +25,18 @@ def cluster_im(im,type_cluster, num_k):
 
     print 'CLUSTERING IN TO %d CLUSTERS' % num_k
     kmeans = sklearn.cluster.KMeans(n_clusters=num_k)
+
     arr_shape = arr.shape
     arr = np.reshape(arr, (arr.shape[0]*arr.shape[1],arr.shape[2]))
+    mean = np.mean(arr,0,keepdims = True)
+    std = np.std(arr,0, keepdims = True)
+    std[std==0]=1.
+    arr = (arr-mean)/std
+    
     arr_idx = kmeans.fit_predict(arr)
 
     for idx_curr in range(num_k):
-        arr[arr_idx==idx_curr,:]=kmeans.cluster_centers_[idx_curr]
+        arr[arr_idx==idx_curr,:]=(kmeans.cluster_centers_[idx_curr]*std)+mean
 
     arr = np.reshape(arr,arr_shape)
     
@@ -71,7 +79,7 @@ def magic(in_file,
 
     in_file_stripped = in_file[:in_file.rindex('.')]
     
-    im = scipy.misc.imread(in_file)
+    im = scipy.misc.imread(in_file,mode='RGB')
     if np.max(im.shape)>800:
         im = downscale(im,800,'bilinear')
 
