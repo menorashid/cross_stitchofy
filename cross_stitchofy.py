@@ -12,7 +12,7 @@ import argparse
 def cluster_im(im,type_cluster, num_k):
 
     arr = np.array(im,dtype=float)/255.
-    print np.min(arr),np.max(arr)
+    # print np.min(arr),np.max(arr)
     if type_cluster[0]=='hsv':
         arr = matplotlib.colors.rgb_to_hsv(arr)
     
@@ -123,7 +123,7 @@ def main(args):
     parser = argparse.ArgumentParser(description='Make cross stitch pattern from image.')
     parser.add_argument('in_file', metavar='in_file', type=str, help='image to cross stitchofy')
     parser.add_argument('--type_cluster', metavar='type_cluster',default = 'rgb', type=str, help='clustering space. rgb or hsv')
-    parser.add_argument('--num_clusters', metavar='num_clusters',default = 5, type=int, help='number of colors')
+    parser.add_argument('--num_clusters', metavar='num_clusters',default = 8, type=int, help='number of colors')
     parser.add_argument('--big_side', metavar='big_side',default = 80, type=int, help='number of boxes on the bigger side')
 
     parser.add_argument('--grid_color', metavar='grid_color', type=str, default='k', help='color of grid lines. pick high contrast for ease')
